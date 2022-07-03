@@ -19,10 +19,6 @@ export default class Server {
   private serviceRouter: ServiceRouter;
   private bookingRouter: BookingRouter;
 
-  constructor() {
-
-  }
-
   run() {
     this.initService();
     this.initRoutes()

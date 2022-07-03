@@ -25,10 +25,10 @@ export default class ServiceController {
 
   async getServices(request: Request, response: Response) {
     const data = { ...request.body }
-    let service;
+    let services;
 
     try {
-      service = await Service.find({ cleaner: request.params.id })
+      services = await Service.find({ cleaner: request.params.id });
     } catch (e) {
       response.status(500)
       return response.json(errors.DB_ERROR);
@@ -36,7 +36,7 @@ export default class ServiceController {
 
     response.status(201);
     response.json({
-      service,
+      services,
     })
   }
 

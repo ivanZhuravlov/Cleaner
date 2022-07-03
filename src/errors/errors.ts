@@ -22,6 +22,10 @@ const errors = {
   BAD_REQUEST_CLEANER_NOT_FOUND: {
     code: 'BAD_REQUEST_ERROR',
     errors: 'CLEANER_NOT_FOUND',
+  },
+  BAD_REQUEST_NOT_FOUND: {
+    code: 'BAD_REQUEST_ERROR',
+    errors: 'data not found',
   }
 }
 

@@ -1,19 +1,27 @@
-import { Request, Response } from 'express';
+import { Response } from 'express';
 import Booking from '../models/Booking';
 import Service from '../models/Service';
+import User from '../models/User';
 import errors from '../errors/errors';
 import BookingStatus from '../enums/BookingStatus';
 import IGetUserInfoRequest from '../core/IGetUserInfoRequest';
-
 
 export default class BookingController {
   async createBooking(request: IGetUserInfoRequest, response: Response) {
     let booking;
     try {
       const service = await Service.findById(request.body.id);
-      const userBalance = request.user.balance;
 
-      if (userBalance < service.price) {
+      if (!service) {
+        response.status(404);
+        return response.json(errors.BAD_REQUEST_NOT_FOUND);
+      }
+
+      const userBalance = request.user.balance;
+      const servicePrice = service.price;
+      const newUserBalance = userBalance - servicePrice;
+
+      if (userBalance < servicePrice) {
         response.status(500)
         return response.json({ balance: 'low' });
       }
@@ -27,8 +35,13 @@ export default class BookingController {
       }
 
       booking = new Booking(bookingData);
+      const result = await booking.save();
 
-      await booking.save();
+      if (result.owner) {
+        const user = await User.findById(request.user.id);
+        await user.updateOne({ balance: newUserBalance });
+      }
+
     } catch (e) {
       response.status(500)
       return response.json(errors.DB_ERROR);

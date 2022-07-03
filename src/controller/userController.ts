@@ -1,5 +1,5 @@
 import { Request, Response } from 'express';
-import User from "../models/User";
+import User from '../models/User';
 import SecurityService from '../services/security-service';
 import errors from '../errors/errors';
 
