@@ -1,4 +1,4 @@
-import { Response } from 'express';
+import { Request, Response } from 'express';
 import Booking from '../models/Booking';
 import Service from '../models/Service';
 import User from '../models/User';
@@ -50,6 +50,38 @@ export default class BookingController {
     response.status(201);
     response.json({
       booking,
+    })
+  }
+
+  async getUserBookings(request: IGetUserInfoRequest, response: Response) {
+    let bokings;
+
+    try {
+      bokings = await Booking.find({ owner: request.user.id });
+    } catch (e) {
+      response.status(500)
+      return response.json(errors.DB_ERROR);
+    }
+
+    response.status(201);
+    response.json({
+      bokings,
+    })
+  }
+
+  async getAdminBookings(request: Request, response: Response) {
+    let bokings;
+
+    try {
+      bokings = await Booking.find();
+    } catch (e) {
+      response.status(500)
+      return response.json(errors.DB_ERROR);
+    }
+
+    response.status(201);
+    response.json({
+      bokings,
     })
   }
 }
