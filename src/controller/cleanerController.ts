@@ -10,7 +10,6 @@ export default class CleanerController {
 
     try {
       cleaner = new Cleaner(data);
-
       await cleaner.save();
     } catch (e) {
       return response.json(errors.DB_ERROR);
@@ -22,23 +21,17 @@ export default class CleanerController {
     })
   }
 
-
-
   async uploadAvatar(request: Request, response: Response) {
     const cleaner = await Cleaner.findById(request.params.id)
 
     if (!cleaner) {
       response.status(404)
-      response.json({
-        code: 'BAD_REQUEST_ERROR',
-        errors: 'USER_NOT_FOUND',
-      })
+      response.json(errors.BAD_REQUEST_CLEANER_NOT_FOUND)
     }
-    console.log(request.file)
+
     await cleaner.updateOne({
       avatarSrc: request.file ? request.file.path : '',
     })
     response.status(201).json(cleaner);
   }
-
 }

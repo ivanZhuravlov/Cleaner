@@ -41,7 +41,7 @@ export default class UserController {
     let user = await User.findOne({ login });
     if (!user) {
       response.status(404);
-      return response.json(errors.BAD_REQUEST_USER_NOR_FOUND);
+      return response.json(errors.BAD_REQUEST_USER_NOT_FOUND);
     }
 
     const passwordIsMatch = SecurityService.validatePswd(user.password, password);

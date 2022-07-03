@@ -3,7 +3,7 @@ const errors = {
     code: 'BAD_REQUEST_ERROR',
     message: 'user already exist',
   },
-  BAD_REQUEST_USER_NOR_FOUND: {
+  BAD_REQUEST_USER_NOT_FOUND: {
     code: 'BAD_REQUEST_ERROR',
     errors: 'user not found',
   },
@@ -18,6 +18,10 @@ const errors = {
   BAD_REQUEST_ACCESS_DENIED: {
     code: 'BAD_REQUEST_ERROR',
     errors: 'access forbidden',
+  },
+  BAD_REQUEST_CLEANER_NOT_FOUND: {
+    code: 'BAD_REQUEST_ERROR',
+    errors: 'CLEANER_NOT_FOUND',
   }
 }
 
