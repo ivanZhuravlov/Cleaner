@@ -13,7 +13,7 @@ export default class UserRouter {
   }
 
   getUserRoutes() {
-    console.log('getUserRoutes  work');
+    console.log('getUserRoutes');
     this.router.post('/api/v1/user', validator(userSignUpSchema), this.userController.createUser);
     this.router.post('/api/v1/session', validator(userSignInSchema), this.userController.loginUser);
 

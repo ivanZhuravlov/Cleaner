@@ -18,9 +18,12 @@ export default class CleanerRouter {
   getCleanerRoutes() {
     console.log('getCleanerRoutes');
     this.router.use(passport.authenticate('jwt', { session: false }));
-    this.router.use(admin);
-    this.router.post('/api/v1/cleaner', validator(createCleanerValidationSchema), this.cleanerController.createCleaner);
-    this.router.put('/api/v1/cleaner/:id', uploader.single('image'), this.cleanerController.uploadAvatar);
+    this.router.post('/api/v1/cleaner', admin, validator(createCleanerValidationSchema), this.cleanerController.createCleaner);
+    this.router.put('/api/v1/cleaner/:id', admin, uploader.single('image'), this.cleanerController.uploadAvatar);
+    this.router.get('/api/v1/cleaner', this.cleanerController.getCleaners);
+    this.router.get('/api/v1/cleaner/:id', this.cleanerController.getCleaner);
+
+
     return this.router
   }
 }

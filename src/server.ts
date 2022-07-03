@@ -34,13 +34,12 @@ export default class Server {
     console.log('createApp. work')
     this.app = express();
     this.app.use(bodyParser.json());
+    this.app.use('/src/uploads', express.static('src/uploads'));
     this.app.use(this.userRouter.getUserRoutes());
     this.app.use(this.cleanerRouter.getCleanerRoutes());
     this.app.use(this.serviceRouter.getServiceRoutes());
     this.app.use(passport.initialize());
-    this.app.use('/src/uploads', express.static('uploads'));
     strategy(passport);
-    // this.app.use(errorHandler);
   }
 
   start() {
