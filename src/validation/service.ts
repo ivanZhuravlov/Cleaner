@@ -7,7 +7,6 @@ const serviceValidationSchema = Joi.object({
   cleaner: Joi.string().required(),
 }).unknown();
 
-
 export {
   serviceValidationSchema,
 }

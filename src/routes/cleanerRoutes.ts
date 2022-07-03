@@ -23,7 +23,6 @@ export default class CleanerRouter {
     this.router.get('/api/v1/cleaner', this.cleanerController.getCleaners);
     this.router.get('/api/v1/cleaner/:id', this.cleanerController.getCleaner);
 
-
     return this.router
   }
 }

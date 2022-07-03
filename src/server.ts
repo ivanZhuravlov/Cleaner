@@ -7,8 +7,7 @@ import ServiceRouter from './routes/serviceRoutes';
 import CleanerRouter from './routes/cleanerRoutes';
 import passport from 'passport';
 import strategy from './middleware/passport';
-
-
+import BookingRouter from './routes/bookingRoutes';
 
 const port = process.env.PORT || 8000
 
@@ -18,6 +17,7 @@ export default class Server {
   private userRouter: UserRouter;
   private cleanerRouter: CleanerRouter;
   private serviceRouter: ServiceRouter;
+  private bookingRouter: BookingRouter;
 
   constructor() {
 
@@ -38,6 +38,7 @@ export default class Server {
     this.app.use(this.userRouter.getUserRoutes());
     this.app.use(this.cleanerRouter.getCleanerRoutes());
     this.app.use(this.serviceRouter.getServiceRoutes());
+    this.app.use(this.bookingRouter.geBookingRoutes());
     this.app.use(passport.initialize());
     strategy(passport);
   }
@@ -52,6 +53,7 @@ export default class Server {
     this.userRouter = new UserRouter();
     this.cleanerRouter = new CleanerRouter();
     this.serviceRouter = new ServiceRouter();
+    this.bookingRouter = new BookingRouter();
   }
 
   async initService() {

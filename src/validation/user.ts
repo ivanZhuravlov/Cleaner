@@ -13,7 +13,6 @@ const userSignUpSchema = Joi.object({
   role: Joi.boolean().valid(1, 0),
 })
 
-
 export {
   userSignInSchema,
   userSignUpSchema

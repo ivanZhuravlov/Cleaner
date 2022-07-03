@@ -1,11 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
-import * as Joi from 'joi';
+import IRequestValidator from '../core/IRequestValidator';
 
-type RequestValidator = {
-  validate: (request: any) => Joi.ValidationResult;
-}
-
-export default (validationSchema: RequestValidator) => (request: Request, response: Response, next: NextFunction) => {
+export default (validationSchema: IRequestValidator) => (request: Request, response: Response, next: NextFunction) => {
   const { body } = request;
 
   const result = validationSchema.validate(body);

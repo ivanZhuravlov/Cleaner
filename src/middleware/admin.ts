@@ -1,15 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
+import IGetUserInfoRequest from '../core/IGetUserInfoRequest';
 import errors from '../errors/errors';
 
-interface IGetUserAuthInfoRequest extends Request {
-  user: {
-    id: string,
-    role: number,
-    login: string,
-  }
-}
-
-export default async (request: IGetUserAuthInfoRequest, response: Response, next: NextFunction) => {
+export default async (request: IGetUserInfoRequest, response: Response, next: NextFunction) => {
   console.log('admin middleware:', { role: request.user.role });
 
   if (request.user.role !== 1) {

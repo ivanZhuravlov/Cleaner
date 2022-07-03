@@ -5,9 +5,6 @@ const createCleanerValidationSchema = Joi.object({
   description: Joi.string().required(),
 });
 
-
-
-
 export {
   createCleanerValidationSchema,
 }
