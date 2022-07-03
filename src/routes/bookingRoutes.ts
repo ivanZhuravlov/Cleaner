@@ -22,7 +22,6 @@ export default class BookingRouter {
     this.router.get('/api/v1/booking', this.bookingController.getUserBookings);
     this.router.get('/api/v1/booking/all', admin, this.bookingController.getAdminBookings);
 
-
     return this.router
   }
 } 
