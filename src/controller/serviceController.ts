@@ -24,7 +24,6 @@ export default class ServiceController {
   }
 
   async getServices(request: Request, response: Response) {
-    const data = { ...request.body }
     let services;
 
     try {

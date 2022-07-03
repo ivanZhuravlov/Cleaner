@@ -57,6 +57,26 @@ export default class UserController {
     })
   }
 
+  async resetPassword(request: Request, response: Response) {
+    const { login, newPassword } = request.body;
+    let user = await User.findOne({ login });
+    if (!user) {
+      response.status(404);
+      return response.json(errors.BAD_REQUEST_USER_NOT_FOUND);
+    }
+
+    const password = await SecurityService.generatePswdHash(newPassword);
+
+    await user.updateOne({
+      password,
+    })
+
+    const token = SecurityService.generateToken(user.login, user.id, user.role);
+    response.json({
+      token: `Bearer ${token}`,
+    })
+  }
+
   static getBalance(): number {
     return Math.floor(Math.random() * 500);
   }
