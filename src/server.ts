@@ -1,8 +1,9 @@
 import express from 'express';
-import { Express, Request, Response, NextFunction } from 'express';
+import { Express } from 'express';
 import bodyParser from 'body-parser';
 import DatabaseService from './services/db-service';
 import UserRouter from './routes/userRoutes';
+import ServiceRouter from './routes/serviceRoutes';
 import CleanerRouter from './routes/cleanerRoutes';
 import passport from 'passport';
 import strategy from './middleware/passport';
@@ -16,6 +17,7 @@ export default class Server {
   private dbService: DatabaseService;
   private userRouter: UserRouter;
   private cleanerRouter: CleanerRouter;
+  private serviceRouter: ServiceRouter;
 
   constructor() {
 
@@ -33,7 +35,8 @@ export default class Server {
     this.app = express();
     this.app.use(bodyParser.json());
     this.app.use(this.userRouter.getUserRoutes());
-    this.app.use(this.cleanerRouter.getUserRoutes());
+    this.app.use(this.cleanerRouter.getCleanerRoutes());
+    this.app.use(this.serviceRouter.getServiceRoutes());
     this.app.use(passport.initialize());
     this.app.use('/src/uploads', express.static('uploads'));
     strategy(passport);
@@ -49,6 +52,7 @@ export default class Server {
   initRoutes() {
     this.userRouter = new UserRouter();
     this.cleanerRouter = new CleanerRouter();
+    this.serviceRouter = new ServiceRouter();
   }
 
   async initService() {

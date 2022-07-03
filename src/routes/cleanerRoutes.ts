@@ -15,7 +15,7 @@ export default class CleanerRouter {
     this.cleanerController = new CleanerController();
   }
 
-  getUserRoutes() {
+  getCleanerRoutes() {
     console.log('getCleanerRoutes');
     this.router.use(passport.authenticate('jwt', { session: false }));
     this.router.use(admin);
