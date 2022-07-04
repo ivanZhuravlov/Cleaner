@@ -36,12 +36,13 @@ export default class BookingController {
       booking = new Booking(bookingData);
       const result = await booking.save();
 
+
       if (result.owner) {
-        const user = await User.findById(request.user.id);
-        await user.updateOne({ balance: newUserBalance });
+        await User.findOneAndUpdate({ login: request.user.login }, { balance: newUserBalance })
       }
 
     } catch (e) {
+      console.log(e)
       response.status(500)
       return response.json(errors.DB_ERROR);
     }
