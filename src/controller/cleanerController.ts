@@ -43,7 +43,7 @@ export default class CleanerController {
       return;
     }
 
-    response.status(201).json(cleaners);
+    response.status(200).json(cleaners);
   }
 
   async getCleaner(request: Request, response: Response, next: NextFunction) {
