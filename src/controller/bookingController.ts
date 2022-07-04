@@ -2,10 +2,10 @@ import { NextFunction, Request, Response } from 'express';
 import Booking from '../models/Booking';
 import Service from '../models/Service';
 import User from '../models/User';
-import errors from '../errors/errors';
 import BookingStatus from '../enums/BookingStatus';
 import IGetUserInfoRequest from '../core/IGetUserInfoRequest';
 import ServerExeption from '../errors/ServerExeption';
+import _ from 'lodash';
 
 export default class BookingController {
   async createBooking(request: IGetUserInfoRequest, response: Response, next: NextFunction) {
@@ -83,6 +83,36 @@ export default class BookingController {
     response.status(201);
     response.json({
       bokings,
+    })
+  }
+
+  async completeBooking(request: Request, response: Response, next: NextFunction) {
+    let boking;
+
+    try {
+      boking = await Booking.findById(request.params.id);
+
+      if (!boking) {
+        next(new ServerExeption(404, 'booking not found'));
+        return
+      }
+
+      const updatedBokingData = _.pickBy(request.body, (value: number | string) => value !== undefined);
+
+      console.log(updatedBokingData)
+
+      await boking.updateOne(updatedBokingData);
+
+      boking = await Booking.findById(request.params.id);
+
+    } catch (e) {
+      next(new ServerExeption(500, 'Server Error'));
+      return
+    }
+
+    response.status(201);
+    response.json({
+      boking,
     })
   }
 }
