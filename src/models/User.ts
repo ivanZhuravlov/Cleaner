@@ -7,7 +7,6 @@ const UserSchema = new Schema({
   password: { type: String, requires: true },
   login: { type: String, requires: true },
   balance: { type: Number, required: true },
-  bookings: [{ type: Types.ObjectId, ref: 'Booking' }],
 })
 
 export default model('User', UserSchema);
