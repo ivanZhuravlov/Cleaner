@@ -22,7 +22,6 @@ export default class BookingController {
       const newUserBalance = userBalance - servicePrice;
 
       if (userBalance < servicePrice) {
-        response.status(500)
         return response.json({ balance: 'low' });
       }
 
