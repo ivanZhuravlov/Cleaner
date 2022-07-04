@@ -8,6 +8,7 @@ import CleanerRouter from './routes/cleanerRoutes';
 import passport from 'passport';
 import strategy from './middleware/passport';
 import BookingRouter from './routes/bookingRoutes';
+import errorHandler from './middleware/errorHandler';
 
 const port = process.env.PORT || 8000
 
@@ -36,6 +37,7 @@ export default class Server {
     this.app.use(this.serviceRouter.getServiceRoutes());
     this.app.use(this.bookingRouter.geBookingRoutes());
     this.app.use(passport.initialize());
+    this.app.use(errorHandler);
     strategy(passport);
   }
 
