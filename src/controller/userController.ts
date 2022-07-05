@@ -1,18 +1,18 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import User from '../models/User';
 import SecurityService from '../services/security-service';
-import errors from '../errors/errors';
+import ServerExeption from '../errors/ServerExeption';
 
 export default class UserController {
 
-  async createUser(request: Request, response: Response) {
+  async createUser(request: Request, response: Response, next: NextFunction) {
 
     const { login, password } = request.body;
     let candidate = await User.findOne({ login });
 
     if (candidate) {
-      response.status(404);
-      return response.json(errors.BAD_REQUEST_USER_EXIST);
+      next(new ServerExeption(404, 'user already exist'))
+      return
     }
 
     const data = { ...request.body }
@@ -25,7 +25,8 @@ export default class UserController {
 
       await user.save();
     } catch (e) {
-      return response.json(errors.DB_ERROR);
+      next(new ServerExeption(404, 'failed to seve user into db'));
+      return
     }
 
     const token = SecurityService.generateToken(user.login, user.id, user.role);
@@ -35,19 +36,19 @@ export default class UserController {
     })
   }
 
-  async loginUser(request: Request, response: Response) {
+  async loginUser(request: Request, response: Response, next: NextFunction) {
 
     const { login, password } = request.body;
     let user = await User.findOne({ login });
     if (!user) {
-      response.status(404);
-      return response.json(errors.BAD_REQUEST_USER_NOT_FOUND);
+      next(new ServerExeption(404, 'user not found'));
+      return
     }
 
     const passwordIsMatch = SecurityService.validatePswd(user.password, password);
     if (!passwordIsMatch) {
-      response.status(404)
-      return response.json(errors.BAD_REQUEST_WRONG_PASSWORD)
+      next(new ServerExeption(404, 'incorrect password'));
+      return
     }
 
     const token = SecurityService.generateToken(user.login, user.id, user.role);
@@ -57,12 +58,12 @@ export default class UserController {
     })
   }
 
-  async resetPassword(request: Request, response: Response) {
+  async resetPassword(request: Request, response: Response, next: NextFunction) {
     const { login, newPassword } = request.body;
     let user = await User.findOne({ login });
     if (!user) {
-      response.status(404);
-      return response.json(errors.BAD_REQUEST_USER_NOT_FOUND);
+      next(new ServerExeption(404, 'user not found'));
+      return
     }
 
     const password = await SecurityService.generatePswdHash(newPassword);

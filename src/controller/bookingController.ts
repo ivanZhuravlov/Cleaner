@@ -1,20 +1,21 @@
-import { Request, Response } from 'express';
+import { NextFunction, Request, Response } from 'express';
 import Booking from '../models/Booking';
 import Service from '../models/Service';
 import User from '../models/User';
-import errors from '../errors/errors';
 import BookingStatus from '../enums/BookingStatus';
 import IGetUserInfoRequest from '../core/IGetUserInfoRequest';
+import ServerExeption from '../errors/ServerExeption';
+import _ from 'lodash';
 
 export default class BookingController {
-  async createBooking(request: IGetUserInfoRequest, response: Response) {
+  async createBooking(request: IGetUserInfoRequest, response: Response, next: NextFunction) {
     let booking;
     try {
       const service = await Service.findById(request.body.id);
 
       if (!service) {
-        response.status(404);
-        return response.json(errors.BAD_REQUEST_NOT_FOUND);
+        next(new ServerExeption(404, 'service not found'));
+        return
       }
 
       const userBalance = request.user.balance;
@@ -22,8 +23,8 @@ export default class BookingController {
       const newUserBalance = userBalance - servicePrice;
 
       if (userBalance < servicePrice) {
-        response.status(500)
-        return response.json({ balance: 'low' });
+        next(new ServerExeption(402, 'Payment Required '));
+        return
       }
 
       const bookingData = {
@@ -37,14 +38,14 @@ export default class BookingController {
       booking = new Booking(bookingData);
       const result = await booking.save();
 
+
       if (result.owner) {
-        const user = await User.findById(request.user.id);
-        await user.updateOne({ balance: newUserBalance });
+        await User.findOneAndUpdate({ login: request.user.login }, { balance: newUserBalance })
       }
 
     } catch (e) {
-      response.status(500)
-      return response.json(errors.DB_ERROR);
+      next(new ServerExeption(500, 'Server Error'));
+      return
     }
 
     response.status(201);
@@ -53,14 +54,14 @@ export default class BookingController {
     })
   }
 
-  async getUserBookings(request: IGetUserInfoRequest, response: Response) {
+  async getUserBookings(request: IGetUserInfoRequest, response: Response, next: NextFunction) {
     let bokings;
 
     try {
       bokings = await Booking.find({ owner: request.user.id });
     } catch (e) {
-      response.status(500)
-      return response.json(errors.DB_ERROR);
+      next(new ServerExeption(500, 'Server Error'));
+      return
     }
 
     response.status(201);
@@ -69,19 +70,49 @@ export default class BookingController {
     })
   }
 
-  async getAdminBookings(request: Request, response: Response) {
+  async getAdminBookings(request: Request, response: Response, next: NextFunction) {
     let bokings;
 
     try {
       bokings = await Booking.find();
     } catch (e) {
-      response.status(500)
-      return response.json(errors.DB_ERROR);
+      next(new ServerExeption(500, 'Server Error'));
+      return
     }
 
     response.status(201);
     response.json({
       bokings,
+    })
+  }
+
+  async completeBooking(request: Request, response: Response, next: NextFunction) {
+    let boking;
+
+    try {
+      boking = await Booking.findById(request.params.id);
+
+      if (!boking) {
+        next(new ServerExeption(404, 'booking not found'));
+        return
+      }
+
+      const updatedBokingData = _.pickBy(request.body, (value: number | string) => value !== undefined);
+
+      console.log(updatedBokingData)
+
+      await boking.updateOne(updatedBokingData);
+
+      boking = await Booking.findById(request.params.id);
+
+    } catch (e) {
+      next(new ServerExeption(500, 'Server Error'));
+      return
+    }
+
+    response.status(201);
+    response.json({
+      boking,
     })
   }
 }

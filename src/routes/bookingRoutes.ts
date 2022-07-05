@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import passport from 'passport';
 import validator from '../middleware/validator';
-import { bookingValidationSchema } from '../validation/booking';
+import { bookingValidationSchema, bookingUpdateValidationChema } from '../validation/booking';
 import BookingController from '../controller/bookingController';
 import admin from '../middleware/admin';
 
@@ -21,6 +21,7 @@ export default class BookingRouter {
     this.router.post('/api/v1/booking', validator(bookingValidationSchema), this.bookingController.createBooking);
     this.router.get('/api/v1/booking', this.bookingController.getUserBookings);
     this.router.get('/api/v1/booking/all', admin, this.bookingController.getAdminBookings);
+    this.router.put('/api/v1/booking/:id', admin, validator(bookingUpdateValidationChema), this.bookingController.completeBooking);
 
     return this.router
   }
